@@ -1,13 +1,32 @@
 Package: sadspace
-Title: What the Package Does (One Line, Title Case)
+Title: Exploring SAD space
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Renata",
+           family = "Diaz",
            role = c("aut", "cre"),
            email = "first.last@example.com")
 Description: What the package does (one paragraph)
-License: What license it uses
+License: MIT + file LICENSE
 ByteCompile: true
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
+Imports: 
+    drake (>= 7.0.0),
+    dplyr,
+    gmp,
+    e1071,
+    feasiblesads,
+    here,
+    portalr,
+    purrr,
+    rmarkdown,
+    tidyr,
+    magrittr,
+    vegan
+Suggests:
+    testthat
+Remotes: 
+    diazrenata/feasiblesads

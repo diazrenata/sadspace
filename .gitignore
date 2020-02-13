@@ -1,1 +1,11 @@
 .Rproj.user
+analysis/drake/*
+.drake
+.drake/*
+*.drake*
+analysis/drake/drake-cache*
+analysis/masterp_wide.Rds
+analysis/masterp_tall.Rds
+analysis/masterp_mamm.Rds
+.DS_Store
+*.DS_Store
