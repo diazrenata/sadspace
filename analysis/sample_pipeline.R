@@ -7,16 +7,16 @@ sv <- define_statevars() %>%
   assign_ptable() %>%
   dplyr::filter(p_table != "none")
 
-sv <- sv[1:10, ]
+#sv <- sv[1:10, ]
 
 p_table_list <- as.list(as.character(sv$p_table))
 p_table_list <- lapply(p_table_list, FUN = rlang::sym)
 
-max_draws <- 100
+max_draws <- 10000
 set.seed(1977)
 sample_plan <- drake_plan(
- # wide = target(readRDS(here::here("analysis", "masterp_wide.Rds"))),
-  #tall = target(readRDS(here::here("analysis", "masterp_tall.Rds"))),
+ wide = target(readRDS(here::here("analysis", "masterp_wide.Rds"))),
+  tall = target(readRDS(here::here("analysis", "masterp_tall.Rds"))),
   mamm = target(readRDS(here::here("analysis", "masterp_mamm.Rds"))),
   fs = target(sample_fs(s, n, nsamples = !!max_draws, p_table),
                    transform = map(s = !!sv$s0,
