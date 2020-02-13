@@ -42,27 +42,27 @@ if (interactive())
 
 ## Run the pipeline
 nodename <- Sys.info()["nodename"]
-# if(grepl("ufhpc", nodename)) {
-#   print("I know I am on the HiPerGator!")
-#   library(clustermq)
-#   options(clustermq.scheduler = "slurm", clustermq.template = "slurm_clustermq.tmpl")
-#   ## Run the pipeline parallelized for HiPerGator
-#   make(all,
-#        force = TRUE,
-#        cache = cache,
-#        cache_log_file = here::here("analysis", "drake", "cache_log.txt"),
-#        verbose = 2,
-#        parallelism = "clustermq",
-#        jobs = 50,
-#        caching = "master", memory_strategy = "autoclean") # Important for DBI caches!
-# } else {
-#   library(clustermq)
-#   options(clustermq.scheduler = "multicore")
-#   # Run the pipeline on multiple local cores
-#   system.time(make(all, cache = cache, cache_log_file = here::here("analysis", "drake", "cache_log.txt"), parallelism = "clustermq", jobs = 2))
-# }
-
-system.time(make(sample_plan, cache = cache, cache_log_file = here::here("analysis", "drake", "cache_log.txt")))
+if(grepl("ufhpc", nodename)) {
+  print("I know I am on the HiPerGator!")
+  library(clustermq)
+  options(clustermq.scheduler = "slurm", clustermq.template = "slurm_clustermq.tmpl")
+  ## Run the pipeline parallelized for HiPerGator
+  make(all,
+       force = TRUE,
+       cache = cache,
+       cache_log_file = here::here("analysis", "drake", "cache_log.txt"),
+       verbose = 2,
+       parallelism = "clustermq",
+       jobs = 50,
+       caching = "master", memory_strategy = "autoclean") # Important for DBI caches!
+} else {
+  library(clustermq)
+  options(clustermq.scheduler = "multicore")
+  # Run the pipeline on multiple local cores
+  system.time(make(all, cache = cache, cache_log_file = here::here("analysis", "drake", "cache_log.txt"), parallelism = "clustermq", jobs = 2))
+}
+#
+# system.time(make(sample_plan, cache = cache, cache_log_file = here::here("analysis", "drake", "cache_log.txt")))
 
 dis <- sample_plan %>%
   dplyr::filter(substr(target, 0, 2) == "di") %>%
