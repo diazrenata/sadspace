@@ -75,7 +75,31 @@ di_dfs <- lapply(dis, FUN = function(di_name) return(readd(di_name, cache = cach
 di_dfs <- dplyr::bind_rows(di_dfs) %>%
   dplyr::mutate(max_draws = max_draws)
 
+
+fs_size_dat <- di_dfs %>%
+  dplyr::select(s0, n0, nparts, nunique) %>%
+  dplyr::distinct() %>%
+  dplyr::mutate(log_nparts = log(as.numeric(nparts)),
+         log_nunique = log(nunique))
+
+di_summary_df <- di_dfs %>%
+  dplyr::group_by(s0, n0, nparts, nunique) %>%
+  dplyr::summarize(mean_skew = mean(skew, na.rm = T),
+            sd_skew = sd(skew, na.rm = T),
+            range_skew = max(skew, na.rm = T) - min(skew, na.rm = T),
+            median_skew = median(skew, na.rm = T),
+            median_simpson = median(simpson, na.rm = T),
+            mean_simpson = mean(simpson, na.rm = T),
+            sd_simpson = sd(simpson, na.rm = T),
+            range_simpson = max(simpson, na.rm = T) - min(simpson, na.rm = T)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(log_nunique = log(nunique),
+         log_nparts = log(as.numeric(nparts)))
+
+
 write.csv(di_dfs, here::here("analysis", "di_dfs.csv"), row.names = F)
+write.csv(fs_size_dat, here::here("analysis", "fs_size_dat.csv"), row.names = F)
+write.csv(di_summary_df, here::here("analysis", "di_summary_df.csv"), row.names = F)
 
 DBI::dbDisconnect(db)
 rm(cache)

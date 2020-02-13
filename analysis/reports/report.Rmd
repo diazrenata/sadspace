@@ -1,0 +1,262 @@
+---
+title: "SAD space report"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(drake)
+library(sadspace)
+library(dplyr)
+library(ggplot2)
+```
+
+```{r load stuff}
+
+sv <- define_statevars() %>%
+  assign_ptable() %>%
+  dplyr::filter(p_table != "none")
+
+di_df <- read.csv(here::here("analysis", "di_dfs.csv"), stringsAsFactors = F)
+fs_size_dat <- read.csv(here::here("analysis", "fs_size_dat.csv"), stringsAsFactors = F)
+di_summary_df <- read.csv(here::here("analysis", "di_summary_df.csv"), stringsAsFactors = F)
+
+```
+
+Here is the range of S and N space covered:
+
+```{r plot sn space, fig.dim = c(3.5, 3.5)}
+
+ggplot(sv, aes(s0, n0, color = n0/s0)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(sv, aes(log(s0), log(n0), color = log(n0/s0))) +
+  geom_point() +
+  theme_bw()+
+  scale_color_viridis_c(option = "plasma")+
+  theme(legend.position = "top")
+```
+
+Things are generally easier to see on the log axis, so let's stick with that.
+
+## Size and unique elements from FS
+
+Here is how the size of the feasible set varies with S, N, and N/S:
+
+```{r plot size of fs 1}
+# 
+# fs_size_dat <- di_df %>%
+#   select(s0, n0, nparts, nunique) %>%
+#   distinct() %>%
+#   mutate(log_nparts = log(as.numeric(nparts)),
+#          log_nunique = log(nunique))
+
+ggplot(fs_size_dat, aes(log(s0), log(n0), color =log_nparts)) +
+  geom_point() + 
+  theme_bw()+
+  scale_color_viridis_c(option = "plasma")+
+  theme(legend.position = "top")
+
+```
+
+```{r plot size of fs 2, fig.dim = c(4,3)}
+  ggplot(fs_size_dat, aes(log(s0), log_nparts, color = (log(n0)))) +
+    geom_point() +
+    theme_bw() +
+    scale_color_viridis_c() +
+    theme(legend.position = "top")
+  
+  ggplot(fs_size_dat, aes(log(s0), log_nparts, group = as.factor(log(n0)), color = log(n0))) +
+    geom_line() +
+    theme_bw() +
+    scale_color_viridis_c() +
+    theme(legend.position = "top")
+  
+  ggplot(fs_size_dat, aes(log(n0), log_nparts, color = (log(s0)))) +
+    geom_point() +
+    theme_bw() +
+    scale_color_viridis_c() +
+    theme(legend.position = "top")
+  
+   ggplot(fs_size_dat, aes(log(n0), log_nparts, group = as.factor(log(s0)), color = log(s0))) +
+    geom_line() +
+    theme_bw() +
+    scale_color_viridis_c() +
+    theme(legend.position = "top")
+  ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, color = (log(n0)))) +
+    geom_point() +
+    theme_bw()+
+    scale_color_viridis_c() +
+    theme(legend.position = "top")
+   ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, group = as.factor(log(n0)), color = log(n0))) +
+    geom_line() +
+    theme_bw() +
+    scale_color_viridis_c() +
+    theme(legend.position = "top")
+  ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, color = (log(s0)))) +
+    geom_point() +
+    theme_bw()+
+    scale_color_viridis_c() +
+    theme(legend.position = "top")
+   ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, group = as.factor(log(s0)), color = log(s0))) +
+    geom_line() +
+    theme_bw() +
+    scale_color_viridis_c() +
+    theme(legend.position = "top")
+
+```
+
+Note that the number of elements *would* continue to increase, except we hit the edge of the sampling space.
+
+Here is the number of unique FS found, and the number of unique FS over the number that exist
+
+```{r nunique 1}
+
+ggplot(fs_size_dat, aes(log(s0), log(n0), color = log_nunique)) +
+  geom_point() +
+  scale_color_viridis_c(option = "plasma") +
+  theme_bw() +
+    theme(legend.position = "top")
+```
+
+```{r nunique 2, fig.dim = c(4,3)}
+
+ggplot(fs_size_dat, aes(log(s0), log(n0), color = log_nunique - log_nparts)) +
+  geom_point() +
+  scale_color_viridis_c(option = "plasma") +
+  theme_bw() +
+    theme(legend.position = "top")
+
+ggplot(fs_size_dat, aes(x = log(n0/s0), y = log_nunique - log_nparts, group = log(s0), color = log(s0))) +
+  geom_line() +
+  scale_color_viridis_c() +
+  theme_bw() +
+    theme(legend.position = "top")
+
+```
+
+
+## Skewness behavior
+
+<!-- ```{r summary df} -->
+<!-- di_summary_df <- di_df %>% -->
+<!--   group_by(s0, n0, nparts, nunique) %>% -->
+<!--   summarize(mean_skew = mean(skew, na.rm = T), -->
+<!--             sd_skew = sd(skew, na.rm = T), -->
+<!--             range_skew = max(skew, na.rm = T) - min(skew, na.rm = T), -->
+<!--             median_skew = median(skew, na.rm = T), -->
+<!--             median_simpson = median(simpson, na.rm = T), -->
+<!--             mean_simpson = mean(simpson, na.rm = T), -->
+<!--             sd_simpson = sd(simpson, na.rm = T), -->
+<!--             range_simpson = max(simpson, na.rm = T) - min(simpson, na.rm = T)) %>% -->
+<!--   ungroup() %>% -->
+<!--   mutate(log_nunique = log(nunique), -->
+<!--          log_nparts = log(as.numeric(nparts))) -->
+
+<!-- ``` -->
+
+```{r skewness, fig.dim = c(4,3)}
+
+ggplot(data = di_summary_df, aes(log(s0), log(n0), color = mean_skew)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0), y = mean_skew)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(log(s0), log(n0), color = median_skew)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0), y = median_skew)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(sd_skew)), aes(log(s0), log(n0), color = sd_skew)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(sd_skew)), aes(x = log(n0/s0), group = log(s0), color = log(s0), y = sd_skew)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(range_skew)), aes(log(s0), log(n0), color = range_skew)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(range_skew)), aes(x = log(n0/s0), group = log(s0), color = log(s0), y = range_skew)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+```
+
+## Simpson behavior
+
+```{r simpson, fig.dim = c(4,3)}
+
+ggplot(data = di_summary_df, aes(log(s0), log(n0), color = mean_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0), y = mean_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(log(s0), log(n0), color = median_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0), y = median_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+ggplot(data = filter(di_summary_df, !is.na(sd_simpson)), aes(log(s0), log(n0), color = sd_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(sd_simpson)), aes(x = log(n0/s0), group = log(s0), color = log(s0), y = sd_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(range_simpson)), aes(log(s0), log(n0), color = range_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(range_simpson)), aes(x = log(n0/s0), group = log(s0), color = log(s0), y = range_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+```
