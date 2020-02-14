@@ -200,6 +200,19 @@ ggplot(data = filter(di_summary_df, !is.na(range_skew)), aes(x = log(n0/s0), gro
   theme_bw() +
   scale_color_viridis_c() +
     theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(x = log_nparts,y = mean_skew, group = log(s0), color = log(s0))) +
+  geom_point() + 
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(x = log_nparts,y = range_skew, group = log(s0), color = log(s0))) +
+  geom_point() + 
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+
 ```
 
 ## Simpson behavior
@@ -249,6 +262,19 @@ ggplot(data = filter(di_summary_df, !is.na(range_simpson)), aes(log(s0), log(n0)
 
 ggplot(data = filter(di_summary_df, !is.na(range_simpson)), aes(x = log(n0/s0), group = log(s0), color = log(s0), y = range_simpson)) +
   geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+
+
+ggplot(data = di_summary_df, aes(x = log_nparts,y = mean_simpson, group = log(s0), color = log(s0))) +
+  geom_point() + 
+  theme_bw() +
+  scale_color_viridis_c() +
+    theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(x = log_nparts,y = range_simpson, group = log(s0), color = log(s0))) +
+  geom_point() + 
   theme_bw() +
   scale_color_viridis_c() +
     theme(legend.position = "top")

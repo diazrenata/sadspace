@@ -14,6 +14,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Imports: 
+    DBI,
     drake (>= 7.0.0),
     dplyr,
     gmp,
@@ -23,6 +24,7 @@ Imports:
     portalr,
     purrr,
     rmarkdown,
+    storr,
     tidyr,
     magrittr,
     vegan

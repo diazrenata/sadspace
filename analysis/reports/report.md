@@ -31,24 +31,14 @@ Here is the number of unique samples found relative to the number possible. FS t
 Skewness behavior
 -----------------
 
-<!-- ```{r summary df} -->
-<!-- di_summary_df <- di_df %>% -->
-<!--   group_by(s0, n0, nparts, nunique) %>% -->
-<!--   summarize(mean_skew = mean(skew, na.rm = T), -->
-<!--             sd_skew = sd(skew, na.rm = T), -->
-<!--             range_skew = max(skew, na.rm = T) - min(skew, na.rm = T), -->
-<!--             median_skew = median(skew, na.rm = T), -->
-<!--             median_simpson = median(simpson, na.rm = T), -->
-<!--             mean_simpson = mean(simpson, na.rm = T), -->
-<!--             sd_simpson = sd(simpson, na.rm = T), -->
-<!--             range_simpson = max(simpson, na.rm = T) - min(simpson, na.rm = T)) %>% -->
-<!--   ungroup() %>% -->
-<!--   mutate(log_nunique = log(nunique), -->
-<!--          log_nparts = log(as.numeric(nparts))) -->
-<!-- ``` -->
-![](report_files/figure-markdown_github/skewness-1.png)![](report_files/figure-markdown_github/skewness-2.png)![](report_files/figure-markdown_github/skewness-3.png)![](report_files/figure-markdown_github/skewness-4.png)![](report_files/figure-markdown_github/skewness-5.png)![](report_files/figure-markdown_github/skewness-6.png)![](report_files/figure-markdown_github/skewness-7.png)![](report_files/figure-markdown_github/skewness-8.png)
+Both skewness and the variability in skewness decrease with N/S, and increase with S. For a given S, a higher N/S (so higher N) will have lower skew and lower variability.
+
+![](report_files/figure-markdown_github/skewness-1.png)![](report_files/figure-markdown_github/skewness-2.png)![](report_files/figure-markdown_github/skewness-3.png)![](report_files/figure-markdown_github/skewness-4.png)![](report_files/figure-markdown_github/skewness-5.png)![](report_files/figure-markdown_github/skewness-6.png)![](report_files/figure-markdown_github/skewness-7.png)![](report_files/figure-markdown_github/skewness-8.png)![](report_files/figure-markdown_github/skewness-9.png)![](report_files/figure-markdown_github/skewness-10.png)
 
 Simpson behavior
 ----------------
 
-![](report_files/figure-markdown_github/simpson-1.png)![](report_files/figure-markdown_github/simpson-2.png)![](report_files/figure-markdown_github/simpson-3.png)![](report_files/figure-markdown_github/simpson-4.png)![](report_files/figure-markdown_github/simpson-5.png)![](report_files/figure-markdown_github/simpson-6.png)![](report_files/figure-markdown_github/simpson-7.png)![](report_files/figure-markdown_github/simpson-8.png)
+![](report_files/figure-markdown_github/simpson-1.png)![](report_files/figure-markdown_github/simpson-2.png)![](report_files/figure-markdown_github/simpson-3.png)![](report_files/figure-markdown_github/simpson-4.png)![](report_files/figure-markdown_github/simpson-5.png)![](report_files/figure-markdown_github/simpson-6.png)![](report_files/figure-markdown_github/simpson-7.png)![](report_files/figure-markdown_github/simpson-8.png)![](report_files/figure-markdown_github/simpson-9.png)![](report_files/figure-markdown_github/simpson-10.png)
+
+Example heatmaps
+----------------

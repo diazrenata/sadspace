@@ -96,17 +96,9 @@ di_summary_df <- di_dfs %>%
   dplyr::mutate(log_nunique = log(nunique),
          log_nparts = log(as.numeric(nparts)))
 
-thin_di_dfs <- di_dfs %>%
-  dplyr::group_by(s0, n0, nparts, nunique, max_draws) %>%
-  dplyr::mutate(sim_index = dplyr::row_number) %>%
-  dplyr::ungroup() %>%
-  dplyr::filter(sim_index <= 5000)
-
-
 write.csv(di_dfs, here::here("analysis", "di_dfs.csv"), row.names = F)
 write.csv(fs_size_dat, here::here("analysis", "fs_size_dat.csv"), row.names = F)
 write.csv(di_summary_df, here::here("analysis", "di_summary_df.csv"), row.names = F)
-write.csv(thin_di_dfs, here::here("analysis", "thin_di_dfs.csv"), row.names = F)
 DBI::dbDisconnect(db)
 rm(cache)
 print("Completed OK")
