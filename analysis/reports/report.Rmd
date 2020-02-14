@@ -281,3 +281,76 @@ ggplot(data = di_summary_df, aes(x = log_nparts,y = range_simpson, group = log(s
 ```
 
 ## Example heatmaps
+
+Let's look up close at a few communities.
+
+```{r plot focal communities}
+
+
+focal_communities <- data.frame(
+  s0 = c(3, 3, 34, 34, 666, 3, 34),
+  n0 = c(8, 36316, 55, 36316, 1097, 1097, 1097)
+)
+
+
+focal_communities <- focal_communities %>%
+  mutate(target_name = paste0("fs_", s0, "_", n0))
+
+## this is scrap code to pull 3000 unique sims per focal community from cache on hpg. Drawing more gives v large .csvs for large communities.
+# for(i in 1:nrow(focal_communities)) {
+# thisobj = get_object(focal_communities$target_name[i])
+# thisobj <- thisobj %>% filter(sim %in% unique(sim)[1:3000])
+# write.csv(thisobj, here::here("analysis", "reports", paste0(focal_communities$target_name[i], ".csv")), row.names = F)
+# }
+focal_communities <- left_join(focal_communities, fs_size_dat, by = c("s0", "n0"))
+
+ggplot(fs_size_dat, aes(log(s0), log(n0), color =log_nparts)) +
+  geom_point(alpha = .2) + 
+  geom_point(data = focal_communities, alpha = 1, shape = 8, size = 2) +
+  theme_bw()+
+  scale_color_viridis_c(option = "plasma", begin = .1, end = .8)+
+  theme(legend.position = "top")
+
+focal_communities <- focal_communities %>%
+  mutate(file_name = here::here("analysis", "reports", paste0(target_name, ".csv")))
+
+focal_fs <- list()
+for(i in 1:nrow(focal_communities)) {
+  focal_fs[[i]] <- read.csv(focal_communities$file_name[i], stringsAsFactors = F)
+  
+  focal_fs[[i]] <-  focal_fs[[i]] %>%
+  group_by(sim, nparts, s0, n0) %>%
+  mutate(skew = e1071::skewness(abund),
+         simpson = vegan::diversity(abund, index = "simpson")) %>%
+  ungroup() %>%
+  mutate(s0_f = as.factor(s0),
+         n0_f = as.factor(n0))
+}
+
+
+
+```
+
+```{r focal heatmaps}
+make_heatmap <- function(focal_fs_df, color_var) {
+  
+  
+  
+  if(color_var == "skew") {
+return(ggplot(data = focal_fs_df, aes(x = rank, y = abund, color = skew, group = sim)) +
+  geom_line(alpha = .1) +
+  scale_color_viridis_c() +
+  theme_bw())
+  } else {
+    return(ggplot(data = focal_fs_df, aes(x = rank, y = abund, color = simpson, group = sim)) +
+  geom_line(alpha = .1) +
+  scale_color_viridis_c() +
+  theme_bw())
+  }
+}
+
+skew_hm <- lapply(focal_fs, FUN = make_heatmap, color_var = "skew")
+
+gridExtra::grid.arrange(grobs = skew_hm)
+
+```

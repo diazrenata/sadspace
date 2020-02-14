@@ -42,3 +42,9 @@ Simpson behavior
 
 Example heatmaps
 ----------------
+
+Let's look up close at a few communities.
+
+![](report_files/figure-markdown_github/plot%20focal%20communities-1.png)
+
+![](report_files/figure-markdown_github/focal%20heatmaps-1.png)
