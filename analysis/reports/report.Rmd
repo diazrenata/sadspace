@@ -17,7 +17,7 @@ sv <- define_statevars() %>%
   assign_ptable() %>%
   dplyr::filter(p_table != "none")
 
-di_df <- read.csv(here::here("analysis", "di_dfs.csv"), stringsAsFactors = F)
+#di_df <- read.csv(here::here("analysis", "di_dfs.csv"), stringsAsFactors = F)
 fs_size_dat <- read.csv(here::here("analysis", "fs_size_dat.csv"), stringsAsFactors = F)
 di_summary_df <- read.csv(here::here("analysis", "di_summary_df.csv"), stringsAsFactors = F)
 
@@ -57,10 +57,13 @@ Here is how the size of the feasible set varies with S, N, and N/S:
 ggplot(fs_size_dat, aes(log(s0), log(n0), color =log_nparts)) +
   geom_point() + 
   theme_bw()+
-  scale_color_viridis_c(option = "plasma")+
+  scale_color_viridis_c(option = "plasma", begin = .1, end = .8)+
   theme(legend.position = "top")
 
 ```
+
+
+This is *on a log scale*, so up in that right corner is *1.942426e+130*. 
 
 ```{r plot size of fs 2, fig.dim = c(4,3)}
   ggplot(fs_size_dat, aes(log(s0), log_nparts, color = (log(n0)))) +
@@ -111,22 +114,27 @@ ggplot(fs_size_dat, aes(log(s0), log(n0), color =log_nparts)) +
 
 Note that the number of elements *would* continue to increase, except we hit the edge of the sampling space.
 
-Here is the number of unique FS found, and the number of unique FS over the number that exist
+Here is the number of unique FS found, and the number of unique FS over the number that exist. Note that the number of draws was 10,000, so the maximum possible log(nunique) would be 9.2. FS that found 10,000 unique draws are covered with black dots in this plot:
 
 ```{r nunique 1}
 
 ggplot(fs_size_dat, aes(log(s0), log(n0), color = log_nunique)) +
   geom_point() +
-  scale_color_viridis_c(option = "plasma") +
+  geom_point(data = filter(fs_size_dat, log_nunique >= 9.2), color = "black") +
+  scale_color_viridis_c(option = "plasma", end = .9) +
   theme_bw() +
     theme(legend.position = "top")
 ```
+
+
+Here is the number of unique samples found relative to the number possible. FS that found all the elements possible are covered with green dots:
 
 ```{r nunique 2, fig.dim = c(4,3)}
 
 ggplot(fs_size_dat, aes(log(s0), log(n0), color = log_nunique - log_nparts)) +
   geom_point() +
-  scale_color_viridis_c(option = "plasma") +
+  geom_point(data = filter(fs_size_dat, log_nunique == log_nparts), color = "green")+ 
+  scale_color_viridis_c(option = "plasma", end = .8, begin = .1, direction = -1) +
   theme_bw() +
     theme(legend.position = "top")
 
@@ -141,22 +149,7 @@ ggplot(fs_size_dat, aes(x = log(n0/s0), y = log_nunique - log_nparts, group = lo
 
 ## Skewness behavior
 
-<!-- ```{r summary df} -->
-<!-- di_summary_df <- di_df %>% -->
-<!--   group_by(s0, n0, nparts, nunique) %>% -->
-<!--   summarize(mean_skew = mean(skew, na.rm = T), -->
-<!--             sd_skew = sd(skew, na.rm = T), -->
-<!--             range_skew = max(skew, na.rm = T) - min(skew, na.rm = T), -->
-<!--             median_skew = median(skew, na.rm = T), -->
-<!--             median_simpson = median(simpson, na.rm = T), -->
-<!--             mean_simpson = mean(simpson, na.rm = T), -->
-<!--             sd_simpson = sd(simpson, na.rm = T), -->
-<!--             range_simpson = max(simpson, na.rm = T) - min(simpson, na.rm = T)) %>% -->
-<!--   ungroup() %>% -->
-<!--   mutate(log_nunique = log(nunique), -->
-<!--          log_nparts = log(as.numeric(nparts))) -->
-
-<!-- ``` -->
+Both skewness and the variability in skewness decrease with N/S, and increase with S. For a given S, a higher N/S (so higher N) will have lower skew and lower variability. 
 
 ```{r skewness, fig.dim = c(4,3)}
 
@@ -260,3 +253,5 @@ ggplot(data = filter(di_summary_df, !is.na(range_simpson)), aes(x = log(n0/s0), 
   scale_color_viridis_c() +
     theme(legend.position = "top")
 ```
+
+## Example heatmaps
