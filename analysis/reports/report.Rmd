@@ -9,6 +9,7 @@ library(drake)
 library(sadspace)
 library(dplyr)
 library(ggplot2)
+library(ggpmisc)
 ```
 
 ```{r load stuff}
@@ -66,49 +67,49 @@ ggplot(fs_size_dat, aes(log(s0), log(n0), color =log_nparts)) +
 This is *on a log scale*, so up in that right corner is *1.942426e+130*. 
 
 ```{r plot size of fs 2, fig.dim = c(4,3)}
-  ggplot(fs_size_dat, aes(log(s0), log_nparts, color = (log(n0)))) +
-    geom_point() +
-    theme_bw() +
-    scale_color_viridis_c() +
-    theme(legend.position = "top")
-  
-  ggplot(fs_size_dat, aes(log(s0), log_nparts, group = as.factor(log(n0)), color = log(n0))) +
-    geom_line() +
-    theme_bw() +
-    scale_color_viridis_c() +
-    theme(legend.position = "top")
-  
-  ggplot(fs_size_dat, aes(log(n0), log_nparts, color = (log(s0)))) +
-    geom_point() +
-    theme_bw() +
-    scale_color_viridis_c() +
-    theme(legend.position = "top")
-  
-   ggplot(fs_size_dat, aes(log(n0), log_nparts, group = as.factor(log(s0)), color = log(s0))) +
-    geom_line() +
-    theme_bw() +
-    scale_color_viridis_c() +
-    theme(legend.position = "top")
-  ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, color = (log(n0)))) +
-    geom_point() +
-    theme_bw()+
-    scale_color_viridis_c() +
-    theme(legend.position = "top")
-   ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, group = as.factor(log(n0)), color = log(n0))) +
-    geom_line() +
-    theme_bw() +
-    scale_color_viridis_c() +
-    theme(legend.position = "top")
-  ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, color = (log(s0)))) +
-    geom_point() +
-    theme_bw()+
-    scale_color_viridis_c() +
-    theme(legend.position = "top")
-   ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, group = as.factor(log(s0)), color = log(s0))) +
-    geom_line() +
-    theme_bw() +
-    scale_color_viridis_c() +
-    theme(legend.position = "top")
+ggplot(fs_size_dat, aes(log(s0), log_nparts, color = (log(n0)))) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+
+ggplot(fs_size_dat, aes(log(s0), log_nparts, group = as.factor(log(n0)), color = log(n0))) +
+  geom_line() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+
+ggplot(fs_size_dat, aes(log(n0), log_nparts, color = (log(s0)))) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+
+ggplot(fs_size_dat, aes(log(n0), log_nparts, group = as.factor(log(s0)), color = log(s0))) +
+  geom_line() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, color = (log(n0)))) +
+  geom_point() +
+  theme_bw()+
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, group = as.factor(log(n0)), color = log(n0))) +
+  geom_line() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, color = (log(s0)))) +
+  geom_point() +
+  theme_bw()+
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+ggplot(fs_size_dat, aes(log(n0/s0), log_nparts, group = as.factor(log(s0)), color = log(s0))) +
+  geom_line() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
 
 ```
 
@@ -123,7 +124,7 @@ ggplot(fs_size_dat, aes(log(s0), log(n0), color = log_nunique)) +
   geom_point(data = filter(fs_size_dat, log_nunique >= 9.2), color = "black") +
   scale_color_viridis_c(option = "plasma", end = .9) +
   theme_bw() +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 ```
 
 
@@ -136,13 +137,13 @@ ggplot(fs_size_dat, aes(log(s0), log(n0), color = log_nunique - log_nparts)) +
   geom_point(data = filter(fs_size_dat, log_nunique == log_nparts), color = "green")+ 
   scale_color_viridis_c(option = "plasma", end = .8, begin = .1, direction = -1) +
   theme_bw() +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 
 ggplot(fs_size_dat, aes(x = log(n0/s0), y = log_nunique - log_nparts, group = log(s0), color = log(s0))) +
   geom_line() +
   scale_color_viridis_c() +
   theme_bw() +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 
 ```
 
@@ -150,6 +151,8 @@ ggplot(fs_size_dat, aes(x = log(n0/s0), y = log_nunique - log_nparts, group = lo
 ## Skewness behavior
 
 Both skewness and the variability in skewness decrease with N/S, and increase with S. For a given S, a higher N/S (so higher N) will have lower skew and lower variability. 
+
+I don't think it matters very much whether you look at mean or median/range or sd.
 
 ```{r skewness, fig.dim = c(4,3)}
 
@@ -163,7 +166,7 @@ ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0
   geom_point() +
   theme_bw() +
   scale_color_viridis_c() +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 
 ggplot(data = di_summary_df, aes(log(s0), log(n0), color = median_skew)) +
   geom_point() +
@@ -175,7 +178,7 @@ ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0
   geom_point() +
   theme_bw() +
   scale_color_viridis_c() +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 
 ggplot(data = filter(di_summary_df, !is.na(sd_skew)), aes(log(s0), log(n0), color = sd_skew)) +
   geom_point() +
@@ -187,7 +190,7 @@ ggplot(data = filter(di_summary_df, !is.na(sd_skew)), aes(x = log(n0/s0), group 
   geom_point() +
   theme_bw() +
   scale_color_viridis_c() +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 
 ggplot(data = filter(di_summary_df, !is.na(range_skew)), aes(log(s0), log(n0), color = range_skew)) +
   geom_point() +
@@ -199,97 +202,22 @@ ggplot(data = filter(di_summary_df, !is.na(range_skew)), aes(x = log(n0/s0), gro
   geom_point() +
   theme_bw() +
   scale_color_viridis_c() +
-    theme(legend.position = "top")
-
-ggplot(data = di_summary_df, aes(x = log_nparts,y = mean_skew, group = log(s0), color = log(s0))) +
-  geom_point() + 
-  theme_bw() +
-  scale_color_viridis_c() +
-    theme(legend.position = "top")
-
-ggplot(data = di_summary_df, aes(x = log_nparts,y = range_skew, group = log(s0), color = log(s0))) +
-  geom_point() + 
-  theme_bw() +
-  scale_color_viridis_c() +
-    theme(legend.position = "top")
+  theme(legend.position = "top")
 
 ```
 
-## Simpson behavior
 
-```{r simpson, fig.dim = c(4,3)}
+This behavior is a little hard to understand - why should high N communities have *lower* skew? Let's look more closely at a few communities.
 
-ggplot(data = di_summary_df, aes(log(s0), log(n0), color = mean_simpson)) +
-  geom_point() +
-  theme_bw() +
-  scale_color_viridis_c(option = "plasma") +
-  theme(legend.position = "top")
+These are the communities we'll pull out:
 
-ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0), y = mean_simpson)) +
-  geom_point() +
-  theme_bw() +
-  scale_color_viridis_c() +
-    theme(legend.position = "top")
-
-ggplot(data = di_summary_df, aes(log(s0), log(n0), color = median_simpson)) +
-  geom_point() +
-  theme_bw() +
-  scale_color_viridis_c(option = "plasma") +
-  theme(legend.position = "top")
-
-ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0), y = median_simpson)) +
-  geom_point() +
-  theme_bw() +
-  scale_color_viridis_c() +
-    theme(legend.position = "top")
-ggplot(data = filter(di_summary_df, !is.na(sd_simpson)), aes(log(s0), log(n0), color = sd_simpson)) +
-  geom_point() +
-  theme_bw() +
-  scale_color_viridis_c(option = "plasma") +
-  theme(legend.position = "top")
-
-ggplot(data = filter(di_summary_df, !is.na(sd_simpson)), aes(x = log(n0/s0), group = log(s0), color = log(s0), y = sd_simpson)) +
-  geom_point() +
-  theme_bw() +
-  scale_color_viridis_c() +
-    theme(legend.position = "top")
-
-ggplot(data = filter(di_summary_df, !is.na(range_simpson)), aes(log(s0), log(n0), color = range_simpson)) +
-  geom_point() +
-  theme_bw() +
-  scale_color_viridis_c(option = "plasma") +
-  theme(legend.position = "top")
-
-ggplot(data = filter(di_summary_df, !is.na(range_simpson)), aes(x = log(n0/s0), group = log(s0), color = log(s0), y = range_simpson)) +
-  geom_point() +
-  theme_bw() +
-  scale_color_viridis_c() +
-    theme(legend.position = "top")
-
-
-ggplot(data = di_summary_df, aes(x = log_nparts,y = mean_simpson, group = log(s0), color = log(s0))) +
-  geom_point() + 
-  theme_bw() +
-  scale_color_viridis_c() +
-    theme(legend.position = "top")
-
-ggplot(data = di_summary_df, aes(x = log_nparts,y = range_simpson, group = log(s0), color = log(s0))) +
-  geom_point() + 
-  theme_bw() +
-  scale_color_viridis_c() +
-    theme(legend.position = "top")
-```
-
-## Example heatmaps
-
-Let's look up close at a few communities.
 
 ```{r plot focal communities}
 
 
 focal_communities <- data.frame(
-  s0 = c(3, 3, 34, 34, 666, 3, 34),
-  n0 = c(8, 36316, 55, 36316, 1097, 1097, 1097)
+  s0 = c(3, 3, 3, 34, 34, 34, 666),
+  n0 = c(8, 1097, 36316, 55, 1097, 36316, 1097)
 )
 
 
@@ -319,38 +247,212 @@ for(i in 1:nrow(focal_communities)) {
   focal_fs[[i]] <- read.csv(focal_communities$file_name[i], stringsAsFactors = F)
   
   focal_fs[[i]] <-  focal_fs[[i]] %>%
-  group_by(sim, nparts, s0, n0) %>%
-  mutate(skew = e1071::skewness(abund),
-         simpson = vegan::diversity(abund, index = "simpson")) %>%
-  ungroup() %>%
-  mutate(s0_f = as.factor(s0),
-         n0_f = as.factor(n0))
+    group_by(sim, nparts, s0, n0) %>%
+    mutate(skew = e1071::skewness(abund),
+           simpson = vegan::diversity(abund, index = "simpson")) %>%
+    ungroup() %>%
+    mutate(s0_f = as.factor(s0),
+           n0_f = as.factor(n0))
 }
 
 
 
 ```
 
-```{r focal heatmaps}
+
+```{r focal heatmaps, fig.dim = c(4,4)}
 make_heatmap <- function(focal_fs_df, color_var) {
   
-  
+  if(length(unique(focal_fs_df$sim)) <= 100) {
+    max_alpha <- .5
+  } else {
+    max_alpha <- .1
+  }
   
   if(color_var == "skew") {
-return(ggplot(data = focal_fs_df, aes(x = rank, y = abund, color = skew, group = sim)) +
-  geom_line(alpha = .1) +
-  scale_color_viridis_c() +
-  theme_bw())
+    
+    spplot <- ggplot(di_summary_df, aes(log(s0), log(n0), color =mean_skew)) +
+      geom_point(alpha = .2) + 
+      geom_point(data = filter(di_summary_df, s0 == focal_fs_df$s0[1], n0 == focal_fs_df$n0[[1]]), alpha = 1, shape = 8, size = 5) +
+      theme_bw()+
+      scale_color_viridis_c(option = "plasma", begin = .1, end = .8)+
+      theme(legend.position = "none",axis.title.x=element_blank(),
+            axis.text.x=element_blank(),
+            axis.ticks.x=element_blank(),
+            axis.title.y=element_blank(),
+            axis.text.y=element_blank(),
+            axis.ticks.y=element_blank())
+    
+    
   } else {
-    return(ggplot(data = focal_fs_df, aes(x = rank, y = abund, color = simpson, group = sim)) +
-  geom_line(alpha = .1) +
-  scale_color_viridis_c() +
-  theme_bw())
+    spplot <- ggplot(di_summary_df, aes(log(s0), log(n0), color =mean_simpson))+
+      geom_point(alpha = .2) + 
+      geom_point(data = filter(di_summary_df, s0 == focal_fs_df$s0[1], n0 == focal_fs_df$n0[[1]]), alpha = 1, shape = 8, size = 5) +
+      theme_bw()+
+      scale_color_viridis_c(option = "plasma", begin = .1, end = .8)+
+      theme(legend.position = "none",axis.title.x=element_blank(),
+            axis.text.x=element_blank(),
+            axis.ticks.x=element_blank(),
+            axis.title.y=element_blank(),
+            axis.text.y=element_blank(),
+            axis.ticks.y=element_blank())
+  }
+  
+  
+  smallp <- tibble(x = 1, y = max(focal_fs_df$abund), plot= list(spplot))
+  
+  if(color_var == "skew") {
+    return(
+      ggplot(data = focal_fs_df, aes(x = rank, y = abund, color = skew, group = sim)) +
+        geom_line(alpha = max_alpha) +
+        scale_color_viridis_c() +
+        theme_bw() +
+        geom_plot(data = smallp, aes(x, y, label = plot), vp.width = .4, vp.height = .4) +
+        theme(legend.position = "top")
+      
+    )
+    
+  } else {
+    ggplot(data = focal_fs_df, aes(x = rank, y = abund, color = simpson, group = sim)) +
+      geom_line(alpha = max_alpha) +
+      scale_color_viridis_c() +
+      theme_bw() +
+      geom_plot(data = smallp, aes(x, y, label = plot), vp.width = .4, vp.height = .4)+
+      theme(legend.position = "top")
   }
 }
-
 skew_hm <- lapply(focal_fs, FUN = make_heatmap, color_var = "skew")
 
-gridExtra::grid.arrange(grobs = skew_hm)
+for(i in 1:length(skew_hm)) {
+  print(skew_hm[[i]])
+}
 
 ```
+
+It looks like 
+
+- Skewness depends largely on S. Higher S creates the possibility of having higher skew values. N doesn't change too much. I suspect that increasing N increases the abundance of not-the-most-skewed vectors, which is why the means and variability are lower. 
+- Within a FS, skewness broadly tracks intuition.
+
+So, I wouldn't interpret too heavily from skewness values from distributions with vastly different S and N. 
+
+## Simpson behavior
+
+Simpson is generally higher as S increases; it doesn't seem to change too much with N on top of the S change - if anything, it decreases with N for a given S. Variability is high for low S. 
+
+```{r simpson, fig.dim = c(4,3)}
+
+ggplot(data = di_summary_df, aes(log(s0), log(n0), color = mean_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0), y = mean_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(log(s0), log(n0), color = median_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = di_summary_df, aes(x = log(n0/s0), group = log(s0), color = log(s0), y = median_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+ggplot(data = filter(di_summary_df, !is.na(sd_simpson)), aes(log(s0), log(n0), color = sd_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(sd_simpson)), aes(x = log(n0/s0), group = log(s0), color = log(s0), y = sd_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(range_simpson)), aes(log(s0), log(n0), color = range_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma") +
+  theme(legend.position = "top")
+
+ggplot(data = filter(di_summary_df, !is.na(range_simpson)), aes(x = log(n0/s0), group = log(s0), color = log(s0), y = range_simpson)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c() +
+  theme(legend.position = "top")
+
+```
+
+Let's look at those same heatmaps for Simpson's:
+
+```{r simpson hm, fig.dim = c(4,4)}
+
+simpson_hm <- lapply(focal_fs, FUN = make_heatmap, color_var = "simpson")
+for(i in 1:length(simpson_hm)) {
+  print(simpson_hm[[i]])
+}
+```
+
+Simpson gets EXTREMELY HIGH for large S and to a lesser extent large N communities. 
+
+Simpson for different S and N, and especially different S, are NOT COMPARABLE. 
+
+
+## Distributions of skewness and simpson w nsamples
+
+```{r dists}
+
+make_distplot <- function(focal_fs_df, varname) {
+  
+  
+  focal_fs_df <- focal_fs_df %>%
+    select(simpson, skew, sim, s0, n0) %>%
+    distinct() 
+  
+  nsim <- length(unique(focal_fs_df$sim))
+  
+  focal_fs_df$section <- "large"
+  focal_fs_df$section[ which(focal_fs_df$sim %in% unique(focal_fs_df$sim)[1: floor(nsim / 5)])] <- "small"
+  
+  if(varname == "skew") {
+
+    return(
+      ggplot(data = focal_fs_df, aes(x = skew)) +
+        geom_histogram() +
+        theme_bw() +
+        facet_wrap(vars(section), scales = "free_y")
+    )
+    
+  } else {
+
+    return(ggplot(data = focal_fs_df, aes(x = simpson)) +
+        geom_histogram() +
+        theme_bw() +
+        facet_wrap(vars(section), scales = "free_y") +
+      xlim(0, 1) +
+      theme_bw())
+      }
+}
+skew_dp <- lapply(focal_fs, FUN = make_distplot, varname = "skew")
+
+for(i in 1:length(skew_dp)) {
+  print(skew_dp[[i]])
+}
+
+
+simpson_dp <- lapply(focal_fs, FUN = make_distplot, varname = "simpson")
+
+for(i in 1:length(simpson_dp)) {
+  print(simpson_dp[[i]])
+}
+
+```
+OK, I feel good that the sim index is unrelated to the value, and that increasing the nb of sims only increases resolution, not shape.
