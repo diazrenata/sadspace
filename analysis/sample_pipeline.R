@@ -6,10 +6,10 @@ expose_imports("sadspace")
 sv <- define_statevars()
 
 sv2 <- sv %>%
-  select(s0) %>%
-  distinct() %>%
-  mutate(n0 = ceiling(s0 + max(.01 * s0, 4))) %>%
-  filter(n0 < 1.5 * s0)
+  dplyr::select(s0) %>%
+  dplyr::distinct() %>%
+  dplyr::mutate(n0 = ceiling(s0 + max(.01 * s0, 4))) %>%
+  dplyr::filter(n0 < 1.5 * s0)
 
 sv <- bind_rows(sv, sv2) %>%
   assign_ptable() %>%
