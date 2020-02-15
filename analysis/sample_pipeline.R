@@ -11,7 +11,7 @@ sv2 <- sv %>%
   dplyr::mutate(n0 = ceiling(s0 + max(.01 * s0, 4))) %>%
   dplyr::filter(n0 < 1.5 * s0)
 
-sv <- bind_rows(sv, sv2) %>%
+sv <- dplyr::bind_rows(sv, sv2) %>%
   assign_ptable() %>%
   dplyr::filter(p_table != "none")
 
