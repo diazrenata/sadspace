@@ -9,4 +9,6 @@ analysis/masterp_tall.Rds
 analysis/masterp_mamm.Rds
 .DS_Store
 *.DS_Store
-analysis/di_dfs.csv
+analysis/di_dfs_long.csv
+analysis/diff_dfs.csv
+analysis/di*
