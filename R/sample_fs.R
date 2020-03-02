@@ -52,12 +52,31 @@ fs_di <- function(fs_samples) {
     dplyr::group_by(sim, nparts, s0, n0) %>%
     dplyr::summarize(
       skew = e1071::skewness(abund),
-      simpson = vegan::diversity(abund, index = "simpson")
+      simpson = vegan::diversity(abund, index = "simpson"),
+      hoover = hoover(abund)
     ) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(nunique = length(unique(sim)))
 
   return(fs_samples)
+
+}
+
+#' Hoover index
+#'
+#' @param abund_vect abund
+#'
+#' @return hoover inequality index
+#' @export
+#'
+hoover <- function(abund_vect) {
+
+  mean_abund = mean(abund_vect)
+  total_abund = sum(abund_vect)
+
+  errors <- sum(abs(abund_vect - mean_abund))
+
+  .5 * (errors / total_abund)
 
 }
 

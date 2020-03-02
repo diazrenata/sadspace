@@ -1,0 +1,56 @@
+---
+title: "Range of variation"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+
+di_dfs <- read.csv(here::here("analysis", "di_dfs.csv"), stringsAsFactors = F)
+
+di_dfs <- di_dfs %>%
+  mutate(community_name = paste0(s0, "_", n0),
+         lognparts = log(as.numeric(nparts))) %>%
+  mutate(more_than_10 = lognparts > 10)
+```
+
+Ambitious heatmaps of ROV:
+
+```{r rov heatmaps, fig.dim = c(10,10)}
+
+di_dfs_comparable <- di_dfs %>%
+  filter(nunique >= 500)
+
+subsampled_dfs <- list()
+for(i in 1:length(unique(di_dfs_comparable$community_name))) {
+  subsampled_dfs[[i]] <- filter(di_dfs, community_name == unique(di_dfs_comparable$community_name)[i])
+  
+  sim_options <- unique(subsampled_dfs[[i]]$sim)
+  
+  sim_options <- sim_options[1:min(length(sim_options), 500)]
+  
+  subsampled_dfs[[i]] <- filter(subsampled_dfs[[i]], sim %in% sim_options)
+  
+}
+
+subsampled_dfs <- bind_rows(subsampled_dfs)
+
+
+ggplot(subsampled_dfs, aes(x = simpson, group = community_name, color = lognparts, linetype = more_than_10)) +
+  geom_density(alpha = 0, size = .5) +
+  theme_bw() +
+  #facet_wrap(vars(more_than_10)) +
+  scale_color_viridis_c(end = .95, direction = -1)
+
+
+ggplot(subsampled_dfs, aes(x = skew, group = community_name, color = lognparts, linetype = more_than_10)) +
+  geom_density(alpha = 0, size = .5) +
+  theme_bw() +
+  #facet_wrap(vars(more_than_10)) +
+  scale_color_viridis_c(end = .95, direction = -1)
+
+```
+
+
