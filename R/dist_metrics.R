@@ -1,3 +1,23 @@
+#' KL Divergence of two fs
+#'
+#' @param two_fs two fs
+#' @param log log units? idk if htis matters
+#'
+#' @return kl div
+#' @export
+#'
+#' @importFrom entropy KL.empirical
+fs_div <- function(two_fs, log = F) {
+  two_fs <- as.matrix(two_fs)
+
+  if(log) {
+    two_fs <- log(two_fs)
+  }
+
+   entropy::KL.empirical(two_fs[1,], two_fs[2,])
+
+}
+
 #' R2 for FS
 #'
 #' R2 as calculated in White et al (2012) and others (I beleive macroecotools)
@@ -78,6 +98,7 @@ fs_diff_sampler <- function(fs_set) {
       r2_log = NA,
       cd = NA,
       prop_off = NA,
+      div = NA,
       s0 = max(fs_set$rank),
       n0 = sum(filter(fs_set, sim == unique(fs_set$sim)[1])$abund),
       nparts = fs_set$nparts[1],
@@ -100,6 +121,7 @@ fs_diff_sampler <- function(fs_set) {
   r2_log <- fs_r2(two_fs, log = T)
   cd <- fs_cd(two_fs)
   prop_off <- proportion_off(two_fs)
+  div <- fs_div(two_fs)
   return(data.frame(
     sim1 = pair[1],
     sim2 = pair[2],
@@ -107,6 +129,7 @@ fs_diff_sampler <- function(fs_set) {
     r2_log = r2_log,
     cd = cd,
     prop_off = prop_off,
+    div = div,
     s0 = ncol(two_fs),
     n0 = sum(two_fs[1, ]),
     nparts = fs_set$nparts[1],
@@ -126,7 +149,7 @@ rep_diff_sampler <- function(fs_set, ndraws) {
   diff_df <- dplyr::bind_rows(replicate(n = ndraws, expr = fs_diff_sampler(fs_set), simplify = F))
 
   diff_df <- diff_df %>%
-    dplyr::distinct_at(c("s0", "n0", "sim1", "sim2", "r2", "r2_log", "cd", "prop_off", "nparts"))
+    dplyr::distinct_at(c("s0", "n0", "sim1", "sim2", "r2", "r2_log", "cd", "prop_off", "div", "nparts"))
 
   return(diff_df)
 }
