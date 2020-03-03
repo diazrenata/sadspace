@@ -68,6 +68,13 @@ ggplot(filter(diffs_summary, ncomparisons < 100), aes((s0), log(n0), color = nco
   theme_bw()
 
 
+ggplot(filter(diffs_summary), aes((s0), log(n0), color = log(n0/s0), shape = log(n0/s0) <= .2)) +
+  geom_point() +
+  scale_color_viridis_c() +
+  theme_bw()
+
+
+
 ```
 
 The region of interest is down where lognparts < 10. These FS also have fewer comparisons (because they are smaller). We will look at results summarized from all comparisons and from subsampled to an equal, small number of comparisons for all communities. We can use the subsampled diffs to look at density plots, etc as well.
@@ -132,7 +139,7 @@ diffs_small_summary <- diffs_small %>%
 ```
 
 
-Not shown, but the r2 relationships (log and not) really go haywire for very low values of mean r2 and mean r2 (log). Very low meaning, r2 < 0 and r2_log < -1.
+Not shown, but the r2 relationships (log and not) get more off for very low values of mean r2 and mean r2 (log). Very low meaning, r2 < 0 and r2_log < -1.
 
 ```{r small summary v summary plots}
 
@@ -179,47 +186,132 @@ The summary stats from the subsampled comparisons are closely related to the non
 
 Subsampling allows us to plot the density plots for these various stats...
 
-```{r density plots wide, fig.dim = c(30, 5)}
+### R2
 
-diffs_small <- mutate(diffs_small, more_than_10 = lognparts >= 10)
+For R2, I have filtered out sim comparisons where r2 < -1. r2 gets as low as -8000, but most of the variation we are interested in is in the 0-1 range. 
 
-ggplot(diffs_small, aes(x = r2, group = community_name, color = lognparts)) +
+These extreme r2 values make it impossible to see what we are looking for in these plots. They are rare and concentrated in the very smallest communities. Excluding them, if anything, makes the density estimates for those communities *more* pointed than they would be if they were included. I have re-subsampled the remaining draws so there are the same number of comparisons represented for every community. 
+
+Other cutoffs, including 0, don't change the qualitative outcome.
+
+```{r density plots r2}
+
+tinyr2_cutoff = -1
+tinyr2_log_cutoff = -2
+
+diffs_small <- mutate(diffs_small, more_than_10 = lognparts >= 10,
+                      tinyr2 = r2 <= tinyr2_cutoff, 
+                      tinyr2_log = r2_log <= tinyr2_log_cutoff) %>%
+  group_by(community_name) %>%
+  mutate(prop_tinyr2 = mean(tinyr2),
+         prop_tinyr2_log = mean(tinyr2_log)) %>%
+  ungroup()
+
+ggplot(filter(diffs_small, prop_tinyr2 > 0), aes(log(s0), log(n0), color = prop_tinyr2)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c()
+
+ggplot(distinct(select(diffs_small, community_name, lognparts, prop_tinyr2)), aes(x = lognparts, y = prop_tinyr2)) +
+  geom_point() +
+  theme_bw() +
+  geom_vline(xintercept = 10)
+
+diffs_small_r2s <- filter(diffs_small, r2 > tinyr2_cutoff) %>%
+  group_by(community_name) %>%
+  mutate(sim_index = row_number(),
+         ncomparison_kept = n()) %>%
+  ungroup() %>%
+  filter(sim_index <= min(ncomparison_kept))
+
+ggplot(diffs_small_r2s, aes(x = r2, group = community_name, color = lognparts)) +
   geom_density(size = .1) +
   theme_bw() +
-  scale_color_viridis_c() +
-  facet_wrap(vars(more_than_10), scales = "fixed")
-
-
-ggplot(diffs_small, aes(x = r2_log, group = community_name, color = lognparts)) +
-  geom_density(size = .1) +
-  theme_bw() +
-  scale_color_viridis_c() +
+  scale_color_viridis_c(option = "plasma", end = .9) +
   facet_wrap(vars(more_than_10), scales = "fixed")
 
 
 ```
 
-```{r density plots bounded, fig.dim =c(20,20)}
+
+Larger FS are dramatically more concentrated with high r2. 
+
+### R2 with log
+
+Similarly, I've removed draws where r2_log <= -2. Changing the cutoff doesn't change the outcome...
+
+```{r density plots r2_log}
+
+ggplot(filter(diffs_small, prop_tinyr2_log > 0), aes(log(s0), log(n0), color = prop_tinyr2_log)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c()
+
+ggplot(distinct(select(diffs_small, community_name, lognparts, prop_tinyr2_log)), aes(x = lognparts, y = prop_tinyr2_log)) +
+  geom_point() +
+  theme_bw() +
+  geom_vline(xintercept = 10)
+
+diffs_small_r2_logs <- filter(diffs_small, r2_log > tinyr2_log_cutoff) %>%
+  group_by(community_name) %>%
+  mutate(sim_index = row_number(),
+         ncomparison_kept = n()) %>%
+  ungroup() %>%
+  filter(sim_index <= min(ncomparison_kept))
+
+ggplot(diffs_small_r2_logs, aes(x = r2_log, group = community_name, color = lognparts)) +
+  geom_density(size = .1) +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma", end = .9) +
+  facet_wrap(vars(more_than_10), scales = "fixed")
+
+```
+
+
+...which is, a concentration at higher r2 for larger FS.
+
+### CD
+
+This is the coefficient of determination from a lm fitting one element of a FS to another. It is bounded 0-1. 
+
+```{r density plots cd}
 ggplot(diffs_small, aes(x = cd, group = community_name, color = lognparts)) +
   geom_density(size = .1) +
   theme_bw() +
-  scale_color_viridis_c() +
+  scale_color_viridis_c(option = "plasma", end = .9) +
   facet_wrap(vars(more_than_10), scales = "fixed")
 
 
-ggplot(diffs_small, aes(x = prop_off, group = community_name, color = lognparts)) +
+```
+
+Again!
+
+### Proportion off
+
+This is the proportion of individuals who are allocated differently in two FS. It is bounded 0-1.
+
+```{r prop_off}
+ggplot(filter(diffs_small, log(n0/s0) >= .2), aes(x = prop_off, group = community_name, color = lognparts)) +
   geom_density(size = .1) +
   theme_bw() +
-  scale_color_viridis_c() +
-  facet_wrap(vars(community_name), scales = "fixed")
-
-
-ggplot(diffs_small, aes(x = div, group = community_name, color = lognparts)) +
-  geom_density(size = .1) +
-  theme_bw() +
-  scale_color_viridis_c() +
-  facet_wrap(vars(community_name), scales = "fixed")
+  scale_color_viridis_c(option = "plasma", end = .9) +
+  facet_wrap(vars(more_than_10), scales = "fixed")
 
 ```
 
-* Consider seeing if FS become more concentrated far from even (hoover)
+Again! This time, the large FS have fewer individuals allocated differently (proportional to the number of individuals in the community)
+
+### K-L divergence
+
+This is an estimate of the Kullbak-Lieber (sp) divergence between two elements of the FS. 
+
+```{r kl div}
+ggplot(filter(diffs_small, log(n0/s0) >= .2), aes(x = div, group = community_name, color = lognparts)) +
+  geom_density(size = .1) +
+  theme_bw() +
+  scale_color_viridis_c(option = "plasma", end = .9) +
+  facet_wrap(vars(more_than_10), scales = "fixed")
+```
+
+
+AGAIN.
