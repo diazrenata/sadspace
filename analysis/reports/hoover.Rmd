@@ -1,0 +1,39 @@
+---
+title: "SAD space report"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(drake)
+library(sadspace)
+library(dplyr)
+library(ggplot2)
+library(ggpmisc)
+```
+
+```{r load a fs}
+
+fs_files <- list.files(path = here::here("analysis", "reports"), pattern = "fs_")
+
+fs_list <- lapply(fs_files, FUN = read.csv, stringsAsFactors = F)
+
+all_fs <- bind_rows(fs_list)
+```
+
+```{r hoover}
+
+all_fs <- all_fs %>%
+  mutate(community_name = paste0(s0, "_", n0)) %>%
+  group_by(community_name, sim) %>%
+  mutate(simpson = vegan::diversity(abund, index = "simpson"),
+         hoover = hoover(abund)) %>%
+  ungroup()
+
+ggplot(all_fs, aes(x = rank,  y = abund, color = hoover, group = sim)) +
+  geom_line(alpha = .1) +
+  theme_bw() +
+  facet_wrap(vars(community_name), scales = "free") + 
+  scale_color_viridis_c()
+
+```

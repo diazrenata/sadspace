@@ -12,113 +12,214 @@ library(ggplot2)
 library(ggpmisc)
 ```
 
-```{r load a fs}
+```{r load diffs}
 
-fs_files <- list.files(path = here::here("analysis", "reports"), pattern = "fs_")
-
-fs_list <- lapply(fs_files, FUN = read.csv, stringsAsFactors = F)
+diffs <- read.csv(here::here("analysis", "diff_dfs.csv"), stringsAsFactors = F)
 ```
 
-```{r diffs}
+```{r unique sim pairings}
 
-fs_diff <- function(two_fs) {
-  return(sum(abs(two_fs[1, ] - two_fs[2, ])) / (2 * sum(two_fs[1,])))
-}
+diffs <- diffs %>%
+  filter(nparts >1, s0 > 2, !is.na(sim1), !is.na(sim2), !is.infinite(r2), !is.infinite(r2_log)) %>%
+  mutate(community_name = paste0(s0, "_", n0)) %>%
+  group_by_all() %>%
+  mutate(low_sim = min(sim1, sim2),
+         high_sim = max(sim1, sim2)) %>%
+  ungroup() %>%
+  group_by(low_sim, high_sim, community_name) %>%
+  mutate(dup = row_number()) %>%
+  ungroup() %>%
+  filter(dup == 1)
 
-fs_r2 <- function(two_fs, log = F) {
-  two_fs <- as.matrix(two_fs)
-  
-  focal <- two_fs[1,]
-  compare <- two_fs[2,]
-  
-  if(log) {
-    
-    focal <- log(focal)
-    compare <- log(compare)
-  } 
-  
-  focal_mean <- mean(focal)
-  
-  numer <- sum((focal - compare) ^ 2)
-  denom <- sum((focal - focal_mean) ^ 2)
-  1 - (numer/denom)
-}
 
-proportion_off <- function(two_fs) {
-    two_fs <- as.matrix(two_fs)
-
-  abs_diff <- sum(abs(two_fs[1, ] - two_fs[2, ])) / 2
-  
-  abs_diff / sum(two_fs[1, ])
-  
-}
-
-fs_cd <- function(two_fs) {
-  two_fs <- as.matrix(two_fs)
-  fs_lm <- lm(two_fs[1, ]  ~ two_fs[2, ])
-  return( summary(fs_lm)$r.squared )
-}
-
-fs_diff_sampler <- function(fs_set) {
-  
-  pair <- sample((unique(fs_set$sim)), size = 2, replace = F)
-  
-  two_fs <- dplyr::filter(fs_set, sim %in% pair) %>%
-    dplyr::select(abund, sim, rank) %>%
-    tidyr::pivot_wider(names_from = rank, values_from = abund) %>%
-    dplyr::select(-sim)
-  
-  r2 <- fs_r2(two_fs)
-  r2_log <- fs_r2(two_fs, log = T)
-  cd <- fs_cd(two_fs)
-  prop_off <- proportion_off(two_fs)
-  return(data.frame(
-    sim1 = min(pair),
-    sim2 = max(pair),
-    r2 = r2,
-    r2_log = r2_log,
-    cd = cd,
-    prop_off = prop_off,
-    s0 = ncol(two_fs),
-    n0 = sum(two_fs[1, ])
-  ))
-}
-
-set.seed(1977)
-
-fs_diffs_list <- lapply(fs_list, FUN = function(fs) return(bind_rows(replicate(n = 100, expr = fs_diff_sampler(fs), simplify = F))))
-
-fs_s <- bind_rows(fs_list)
-fs_diffs <- bind_rows(fs_diffs_list) %>%
-  distinct_at(c("s0", "n0", "sim1", "sim2", "r2", "r2_log", "cd", "prop_off"))
+diffs_summary <- diffs %>%
+  mutate(sim_name = paste0(sim1, "_", sim2)) %>%
+  group_by(community_name, s0, n0, nparts) %>%
+  summarize(ncomparisons = n(),
+            mean_r2 = mean(r2),
+            mean_r2_log = mean(r2_log),
+            mean_cd = mean(cd),
+            mean_prop_off = mean(prop_off),
+            mean_div = mean(div)) %>%
+  ungroup() %>%
+  mutate(lognparts = log(as.numeric(nparts)))
 ```
 
-```{r plots, fig.width = 2, fig.height = 32}
+Number of comparisons
 
-ggplot(fs_s, aes(x = rank, y = abund, group = sim)) +
-  geom_line(alpha = .01) +
+```{r ncomparisons}
+
+ggplot(diffs_summary, aes(lognparts, ncomparisons)) +
+  geom_point() +
   theme_bw() +
-  facet_wrap(vars(s0, n0), scales = "free", ncol = 1)
+  geom_vline(xintercept = 10) +
+  xlim(0, 50) +
+  geom_hline(yintercept = c(100,  250, 500))
 
-ggplot(filter(fs_diffs, r2 >= 0), aes(x = r2)) +
-  geom_histogram(bins = 20) +
-  theme_bw() +
-  facet_wrap(vars(s0, n0), scales = "free_y", ncol = 1)
-
-ggplot(filter(fs_diffs, r2_log >= 0), aes(x = r2_log)) +
-  geom_histogram(bins = 20) +
-  theme_bw() +
-  facet_wrap(vars(s0, n0), scales = "free_y", ncol = 1)
-
-ggplot(fs_diffs, aes(x = cd)) +
-  geom_histogram(bins = 20) +
-  theme_bw() +
-  facet_wrap(vars(s0, n0), scales = "free_y", ncol = 1)
+ggplot(diffs_summary, aes(log(s0), log(n0), color = ncomparisons)) +
+  geom_point() +
+  scale_color_viridis_c() +
+  theme_bw()
 
 
-ggplot(fs_diffs, aes(x = prop_off)) +
-  geom_histogram(bins = 20) +
-  theme_bw() +
-  facet_wrap(vars(s0, n0), scales = "free_y", ncol = 1)
+ggplot(filter(diffs_summary, ncomparisons < 100), aes((s0), log(n0), color = ncomparisons)) +
+  geom_point() +
+  scale_color_viridis_c() +
+  theme_bw()
+
+
 ```
 
+The region of interest is down where lognparts < 10. These FS also have fewer comparisons (because they are smaller). We will look at results summarized from all comparisons and from subsampled to an equal, small number of comparisons for all communities. We can use the subsampled diffs to look at density plots, etc as well.
+
+All comparisons:
+
+```{r all comparisons diff means}
+
+ggplot(filter(diffs_summary), aes(log(s0), log(n0), color = mean_r2, shape = lognparts >= 10)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(limits = c(0, 1))
+
+
+ggplot(filter(diffs_summary), aes(log(s0), log(n0), color = mean_r2_log, shape = lognparts >= 10)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c(limits = c(-2.5, 1))
+
+ggplot(diffs_summary, aes(log(s0), log(n0), color = mean_cd, shape = lognparts >= 10)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c()
+
+
+ggplot(diffs_summary, aes(log(s0), log(n0), color = mean_prop_off, shape = lognparts >= 10)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c()
+
+
+ggplot(diffs_summary, aes(log(s0), log(n0), color = mean_div, shape = lognparts >= 10)) +
+  geom_point() +
+  theme_bw() +
+  scale_color_viridis_c()
+
+
+```
+
+
+```{r small summary}
+
+diffs_small <- diffs %>%
+  mutate(sim_name = paste0(sim1, "_", sim2)) %>%
+  group_by(community_name, s0, n0, nparts) %>%
+  mutate(sim_index = row_number(),
+         ncomparison = n()) %>%
+  ungroup() %>%
+  filter(sim_index <= 100, ncomparison >= 100)  %>%
+  mutate(lognparts = log(as.numeric(nparts)))
+
+diffs_small_summary <- diffs_small %>%
+  group_by(community_name, s0, n0, nparts, ncomparison, lognparts) %>%
+  summarize(ncomparison_included = n(),
+            mean_r2 = mean(r2),
+            mean_r2_log = mean(r2_log),
+            mean_cd = mean(cd),
+            mean_prop_off = mean(prop_off),
+            mean_div = mean(div)) %>%
+  ungroup()
+
+```
+
+
+Not shown, but the r2 relationships (log and not) really go haywire for very low values of mean r2 and mean r2 (log). Very low meaning, r2 < 0 and r2_log < -1.
+
+```{r small summary v summary plots}
+
+summary_comparison <- diffs_small_summary %>%
+  select(community_name, lognparts, s0, n0, mean_r2, mean_r2_log, mean_cd, mean_prop_off, mean_div) %>%
+  left_join(select(diffs_summary, community_name, s0, n0, mean_r2, mean_r2_log, mean_cd, mean_prop_off, mean_div), by = c("community_name", "s0", "n0"))
+
+ggplot(summary_comparison, aes(mean_r2.x, mean_r2.y, color = lognparts)) +
+  geom_point() +
+  theme_bw() + scale_color_viridis_c(limits = c(0, 10)) +
+  xlim(0, 1) +
+  ylim(0, 1)
+
+ggplot(summary_comparison, aes(mean_r2_log.x, mean_r2_log.y, color = lognparts)) +
+  geom_point() +
+  theme_bw() + scale_color_viridis_c(limits = c(0, 10)) +
+  xlim(-1, 1) +
+  ylim(-1, 1) 
+
+ggplot(summary_comparison, aes(mean_cd.x, mean_cd.y, color = lognparts)) +
+  geom_point() +
+  theme_bw() + scale_color_viridis_c(limits = c(0, 10)) +
+  xlim(0.5,1) +
+  ylim(0.5,1)
+
+
+ggplot(summary_comparison, aes(mean_prop_off.x, mean_prop_off.y, color = lognparts)) +
+  geom_point() +
+  theme_bw() + scale_color_viridis_c(limits = c(0, 10)) +
+  xlim(0, .25) +
+  ylim(0, .25)
+
+
+ggplot(summary_comparison, aes(mean_div.x, mean_div.y, color = lognparts)) +
+  geom_point() +
+  theme_bw() + scale_color_viridis_c(limits = c(0, 10)) +
+  xlim(0, .2) +
+  ylim(0, .2)
+
+
+```
+
+The summary stats from the subsampled comparisons are closely related to the non-subsampled comparisons, but there is motion when we subsample. 
+
+Subsampling allows us to plot the density plots for these various stats...
+
+```{r density plots wide, fig.dim = c(30, 5)}
+
+diffs_small <- mutate(diffs_small, more_than_10 = lognparts >= 10)
+
+ggplot(diffs_small, aes(x = r2, group = community_name, color = lognparts)) +
+  geom_density(size = .1) +
+  theme_bw() +
+  scale_color_viridis_c() +
+  facet_wrap(vars(more_than_10), scales = "fixed")
+
+
+ggplot(diffs_small, aes(x = r2_log, group = community_name, color = lognparts)) +
+  geom_density(size = .1) +
+  theme_bw() +
+  scale_color_viridis_c() +
+  facet_wrap(vars(more_than_10), scales = "fixed")
+
+
+```
+
+```{r density plots bounded, fig.dim =c(20,20)}
+ggplot(diffs_small, aes(x = cd, group = community_name, color = lognparts)) +
+  geom_density(size = .1) +
+  theme_bw() +
+  scale_color_viridis_c() +
+  facet_wrap(vars(more_than_10), scales = "fixed")
+
+
+ggplot(diffs_small, aes(x = prop_off, group = community_name, color = lognparts)) +
+  geom_density(size = .1) +
+  theme_bw() +
+  scale_color_viridis_c() +
+  facet_wrap(vars(community_name), scales = "fixed")
+
+
+ggplot(diffs_small, aes(x = div, group = community_name, color = lognparts)) +
+  geom_density(size = .1) +
+  theme_bw() +
+  scale_color_viridis_c() +
+  facet_wrap(vars(community_name), scales = "fixed")
+
+```
+
+* Consider seeing if FS become more concentrated far from even (hoover)

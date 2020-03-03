@@ -66,17 +66,36 @@ ggplot(fs_size_dat, aes(log(s0), log(n0), color =log_nparts)) +
 
 This is *on a log scale*, so up in that right corner is *1.942426e+130*. 
 
-```{r nparts v variability}
+```{r cv in space}
 
-ggplot(filter(di_summary_df, s0 >= 3), aes(log_nparts, sd_skew)) +
+di_summary_df <- di_summary_df %>%
+  mutate(cv_skew = sd_skew/ mean_skew,
+         cv_simpson = sd_simpson/mean_simpson)
+
+ggplot(filter(di_summary_df, !is.infinite(sd_skew), !is.infinite(mean_skew), nparts >2, s0 >= 3), aes(log(s0), log(n0), color = log(cv_skew))) +
+  geom_point() +
+  scale_color_viridis_c() +
+  theme_bw()
+
+ggplot(filter(di_summary_df, !is.infinite(sd_simpson), !is.infinite(mean_simpson), nparts >2, s0 >= 2), aes(log(s0), log(n0), color = log(cv_simpson))) +
+  geom_point() +
+  scale_color_viridis_c() +
+  theme_bw()
+
+```
+
+```{r cv v nparts}
+ggplot(filter(di_summary_df, s0 >= 3, !is.infinite(sd_skew), !is.infinite(mean_skew), nparts > 2), aes(log_nparts, cv_skew, color = (log(s0)))) +
   geom_point() +
   theme_bw() +
-  geom_vline(xintercept = 10)
+  geom_vline(xintercept = 10) +
+  scale_color_viridis_c()
 
 
-
-ggplot(filter(di_summary_df, s0 >= 3), aes(log_nparts, sd_simpson, color = n0)) +
+ggplot(filter(di_summary_df, s0 >= 2, !is.infinite(sd_simpson), !is.infinite(mean_simpson), nparts > 2), aes(log_nparts, cv_simpson,color = (log(s0)))) +
   geom_point() +
   theme_bw() +
-  geom_vline(xintercept = 10)
+  geom_vline(xintercept = 10)+
+  scale_color_viridis_c()
+
 ```

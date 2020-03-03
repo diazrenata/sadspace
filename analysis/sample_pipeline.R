@@ -4,6 +4,7 @@ library(sadspace)
 expose_imports("sadspace")
 
 sv <- define_statevars()
+sv_lows <- define_statevars(s_range = c(0, 2.5), n_range = c(0, 10.5), logs = TRUE, by = .2)
 
 sv2 <- sv %>%
   dplyr::select(s0) %>%
@@ -11,7 +12,7 @@ sv2 <- sv %>%
   dplyr::mutate(n0 = ceiling(s0 + max(.01 * s0, 4))) %>%
   dplyr::filter(n0 < 1.5 * s0)
 
-sv <- dplyr::bind_rows(sv, sv2) %>%
+sv <- dplyr::bind_rows(sv, sv2, sv_lows) %>%
   assign_ptable() %>%
   dplyr::filter(p_table != "none")
 
