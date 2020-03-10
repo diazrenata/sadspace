@@ -22,8 +22,8 @@ sv <- dplyr::bind_rows(sv, sv2, sv_lows) %>%
 p_table_list <- as.list(as.character(sv$p_table))
 p_table_list <- lapply(p_table_list, FUN = rlang::sym)
 
-max_draws <- 10000
-ndraws <- 10000
+max_draws <- 5000
+ndraws <- 5000
 set.seed(1977)
 sample_plan <- drake_plan(
   wide = target(readRDS(here::here("analysis", "masterp_wide.Rds"))),
