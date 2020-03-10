@@ -3,8 +3,8 @@ library(sadspace)
 
 expose_imports("sadspace")
 
-sv <- define_statevars()
-sv_lows <- define_statevars(s_range = c(0, 2.5), n_range = c(0, 10.5), logs = TRUE, by = .4)
+sv <- define_statevars(s_range = c(0, 8), n_range = c(0.1, 12.1))
+sv_lows <- define_statevars(s_range = c(0, 3.5), n_range = c(0.1, 10.6), logs = TRUE, by = .25)
 
 sv2 <- sv %>%
   dplyr::select(s0) %>%
@@ -22,8 +22,8 @@ sv <- dplyr::bind_rows(sv, sv2, sv_lows) %>%
 p_table_list <- as.list(as.character(sv$p_table))
 p_table_list <- lapply(p_table_list, FUN = rlang::sym)
 
-max_draws <- 10000
-ndraws <- 10000
+max_draws <- 5000
+ndraws <- 5000
 set.seed(1977)
 sample_plan <- drake_plan(
   wide = target(readRDS(here::here("analysis", "masterp_wide.Rds"))),
