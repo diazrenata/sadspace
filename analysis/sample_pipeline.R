@@ -3,8 +3,8 @@ library(sadspace)
 
 expose_imports("sadspace")
 
-sv <- define_statevars()
-sv_lows <- define_statevars(s_range = c(0, 2.5), n_range = c(0, 10.5), logs = TRUE, by = .4)
+sv <- define_statevars(s_range = c(0, 8), n_range = c(0.1, 12.1))
+sv_lows <- define_statevars(s_range = c(0, 3.5), n_range = c(0.1, 10.6), logs = TRUE, by = .25)
 
 sv2 <- sv %>%
   dplyr::select(s0) %>%
