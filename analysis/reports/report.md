@@ -35,7 +35,15 @@ Both skewness and the variability in skewness decrease with N/S, and increase wi
 
 I don't think it matters very much whether you look at mean or median/range or sd.
 
-![](report_files/figure-markdown_github/skewness-1.png)![](report_files/figure-markdown_github/skewness-2.png)![](report_files/figure-markdown_github/skewness-3.png)![](report_files/figure-markdown_github/skewness-4.png)![](report_files/figure-markdown_github/skewness-5.png)![](report_files/figure-markdown_github/skewness-6.png)![](report_files/figure-markdown_github/skewness-7.png)![](report_files/figure-markdown_github/skewness-8.png)
+![](report_files/figure-markdown_github/skewness-1.png)
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](report_files/figure-markdown_github/skewness-2.png)![](report_files/figure-markdown_github/skewness-3.png)
+
+    ## Warning: Removed 3 rows containing missing values (geom_point).
+
+![](report_files/figure-markdown_github/skewness-4.png)![](report_files/figure-markdown_github/skewness-5.png)![](report_files/figure-markdown_github/skewness-6.png)![](report_files/figure-markdown_github/skewness-7.png)![](report_files/figure-markdown_github/skewness-8.png)
 
 This behavior is a little hard to understand - why should high N communities have *lower* skew? Let's look more closely at a few communities.
 
@@ -43,7 +51,7 @@ These are the communities we'll pull out:
 
 ![](report_files/figure-markdown_github/plot%20focal%20communities-1.png)
 
-![](report_files/figure-markdown_github/focal%20heatmaps-1.png)![](report_files/figure-markdown_github/focal%20heatmaps-2.png)![](report_files/figure-markdown_github/focal%20heatmaps-3.png)![](report_files/figure-markdown_github/focal%20heatmaps-4.png)![](report_files/figure-markdown_github/focal%20heatmaps-5.png)![](report_files/figure-markdown_github/focal%20heatmaps-6.png)![](report_files/figure-markdown_github/focal%20heatmaps-7.png)
+![](report_files/figure-markdown_github/focal%20heatmaps-1.png)![](report_files/figure-markdown_github/focal%20heatmaps-2.png)![](report_files/figure-markdown_github/focal%20heatmaps-3.png)![](report_files/figure-markdown_github/focal%20heatmaps-4.png)![](report_files/figure-markdown_github/focal%20heatmaps-5.png)![](report_files/figure-markdown_github/focal%20heatmaps-6.png)![](report_files/figure-markdown_github/focal%20heatmaps-7.png)![](report_files/figure-markdown_github/focal%20heatmaps-8.png)![](report_files/figure-markdown_github/focal%20heatmaps-9.png)
 
 It looks like
 
@@ -61,7 +69,7 @@ Simpson is generally higher as S increases; it doesn't seem to change too much w
 
 Let's look at those same heatmaps for Simpson's:
 
-![](report_files/figure-markdown_github/simpson%20hm-1.png)![](report_files/figure-markdown_github/simpson%20hm-2.png)![](report_files/figure-markdown_github/simpson%20hm-3.png)![](report_files/figure-markdown_github/simpson%20hm-4.png)![](report_files/figure-markdown_github/simpson%20hm-5.png)![](report_files/figure-markdown_github/simpson%20hm-6.png)![](report_files/figure-markdown_github/simpson%20hm-7.png)
+![](report_files/figure-markdown_github/simpson%20hm-1.png)![](report_files/figure-markdown_github/simpson%20hm-2.png)![](report_files/figure-markdown_github/simpson%20hm-3.png)![](report_files/figure-markdown_github/simpson%20hm-4.png)![](report_files/figure-markdown_github/simpson%20hm-5.png)![](report_files/figure-markdown_github/simpson%20hm-6.png)![](report_files/figure-markdown_github/simpson%20hm-7.png)![](report_files/figure-markdown_github/simpson%20hm-8.png)![](report_files/figure-markdown_github/simpson%20hm-9.png)
 
 Simpson gets EXTREMELY HIGH for large S and to a lesser extent large N communities.
 
@@ -100,13 +108,9 @@ Distributions of skewness and simpson w nsamples
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 
-    ## Warning: Removed 4 rows containing missing values (geom_bar).
-
 ![](report_files/figure-markdown_github/dists-8.png)
 
     ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-
-    ## Warning: Removed 4 rows containing missing values (geom_bar).
 
 ![](report_files/figure-markdown_github/dists-9.png)
 
@@ -138,4 +142,28 @@ Distributions of skewness and simpson w nsamples
 
     ## Warning: Removed 4 rows containing missing values (geom_bar).
 
-![](report_files/figure-markdown_github/dists-14.png) OK, I feel good that the sim index is unrelated to the value, and that increasing the nb of sims only increases resolution, not shape.
+![](report_files/figure-markdown_github/dists-14.png)
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 4 rows containing missing values (geom_bar).
+
+![](report_files/figure-markdown_github/dists-15.png)
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 4 rows containing missing values (geom_bar).
+
+![](report_files/figure-markdown_github/dists-16.png)
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 4 rows containing missing values (geom_bar).
+
+![](report_files/figure-markdown_github/dists-17.png)
+
+    ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+
+    ## Warning: Removed 4 rows containing missing values (geom_bar).
+
+![](report_files/figure-markdown_github/dists-18.png) OK, I feel good that the sim index is unrelated to the value, and that increasing the nb of sims only increases resolution, not shape.

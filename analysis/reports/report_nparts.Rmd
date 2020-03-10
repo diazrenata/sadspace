@@ -85,12 +85,48 @@ ggplot(filter(di_summary_df, !is.infinite(sd_simpson), !is.infinite(mean_simpson
 ```
 
 ```{r cv v nparts}
+
+
+
+ggplot(filter(di_summary_df, s0 >= 3, !is.infinite(sd_skew), !is.infinite(mean_skew), nparts > 2), aes(log_nparts, mean_skew, color = (log(s0)))) +
+  geom_point() +
+  theme_bw() +
+  geom_vline(xintercept = 10) +
+  scale_color_viridis_c()
+
+
+ggplot(filter(di_summary_df, s0 >= 3, !is.infinite(sd_skew), !is.infinite(mean_skew), nparts > 2), aes(log_nparts, sd_skew, color = (log(s0)))) +
+  geom_point() +
+  theme_bw() +
+  geom_vline(xintercept = 10) +
+  scale_color_viridis_c()
+
 ggplot(filter(di_summary_df, s0 >= 3, !is.infinite(sd_skew), !is.infinite(mean_skew), nparts > 2), aes(log_nparts, cv_skew, color = (log(s0)))) +
   geom_point() +
   theme_bw() +
   geom_vline(xintercept = 10) +
   scale_color_viridis_c()
 
+
+
+ggplot(filter(di_summary_df, s0 >= 3, !is.infinite(sd_simpson), !is.infinite(mean_simpson), nparts > 2), aes(log_nparts, mean_simpson, color = (log(s0)))) +
+  geom_point() +
+  theme_bw() +
+  geom_vline(xintercept = 10) +
+  scale_color_viridis_c()
+
+
+ggplot(filter(di_summary_df, s0 >= 3, !is.infinite(sd_simpson), !is.infinite(mean_simpson), nparts > 2), aes(log_nparts, mean_simpson, color = (log(s0)))) +
+  geom_point() +
+  theme_bw() +
+  geom_vline(xintercept = 10) +
+  scale_color_viridis_c()
+
+ggplot(filter(di_summary_df, s0 >= 3, !is.infinite(sd_simpson), !is.infinite(mean_simpson), nparts > 2), aes(log_nparts, sd_simpson, color = (log(s0)))) +
+  geom_point() +
+  theme_bw() +
+  geom_vline(xintercept = 10) +
+  scale_color_viridis_c()
 
 ggplot(filter(di_summary_df, s0 >= 2, !is.infinite(sd_simpson), !is.infinite(mean_simpson), nparts > 2), aes(log_nparts, cv_simpson,color = (log(s0)))) +
   geom_point() +

@@ -3,7 +3,7 @@ SAD space report
 
 Number of comparisons
 
-    ## Warning: Removed 60 rows containing missing values (geom_point).
+    ## Warning: Removed 84 rows containing missing values (geom_point).
 
 ![](dist_files/figure-markdown_github/ncomparisons-1.png)![](dist_files/figure-markdown_github/ncomparisons-2.png)![](dist_files/figure-markdown_github/ncomparisons-3.png)![](dist_files/figure-markdown_github/ncomparisons-4.png)
 
@@ -15,13 +15,17 @@ All comparisons:
 
 Not shown, but the r2 relationships (log and not) get more off for very low values of mean r2 and mean r2 (log). Very low meaning, r2 &lt; 0 and r2\_log &lt; -1.
 
-    ## Warning: Removed 24 rows containing missing values (geom_point).
+    ## Warning: Removed 115 rows containing missing values (geom_point).
 
 ![](dist_files/figure-markdown_github/small%20summary%20v%20summary%20plots-1.png)
 
-    ## Warning: Removed 17 rows containing missing values (geom_point).
+    ## Warning: Removed 91 rows containing missing values (geom_point).
 
-![](dist_files/figure-markdown_github/small%20summary%20v%20summary%20plots-2.png)![](dist_files/figure-markdown_github/small%20summary%20v%20summary%20plots-3.png)![](dist_files/figure-markdown_github/small%20summary%20v%20summary%20plots-4.png)![](dist_files/figure-markdown_github/small%20summary%20v%20summary%20plots-5.png)
+![](dist_files/figure-markdown_github/small%20summary%20v%20summary%20plots-2.png)![](dist_files/figure-markdown_github/small%20summary%20v%20summary%20plots-3.png)![](dist_files/figure-markdown_github/small%20summary%20v%20summary%20plots-4.png)
+
+    ## Warning: Removed 1 rows containing missing values (geom_point).
+
+![](dist_files/figure-markdown_github/small%20summary%20v%20summary%20plots-5.png)
 
 The summary stats from the subsampled comparisons are closely related to the non-subsampled comparisons, but there is motion when we subsample.
 
