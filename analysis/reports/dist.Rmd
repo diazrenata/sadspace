@@ -1,6 +1,8 @@
 ---
 title: "SAD space report"
 output: github_document
+params:
+  on_hpg: [FALSE]
 ---
 
 ```{r setup, include=FALSE}
@@ -13,38 +15,42 @@ library(ggpmisc)
 ```
 
 ```{r load diffs}
-
-diffs <- read.csv(here::here("analysis", "diff_dfs.csv"), stringsAsFactors = F)
-```
-
-```{r unique sim pairings}
-
-diffs <- diffs %>%
-  filter(nparts >1, s0 > 2, !is.na(sim1), !is.na(sim2), !is.infinite(r2), !is.infinite(r2_log)) %>%
-  mutate(community_name = paste0(s0, "_", n0)) %>%
-  group_by_all() %>%
-  mutate(low_sim = min(sim1, sim2),
-         high_sim = max(sim1, sim2)) %>%
-  ungroup() %>%
-  group_by(low_sim, high_sim, community_name) %>%
-  mutate(dup = row_number()) %>%
-  ungroup() %>%
-  filter(dup == 1)
-
-
-diffs_summary <- diffs %>%
-  mutate(sim_name = paste0(sim1, "_", sim2)) %>%
-  group_by(community_name, s0, n0, nparts) %>%
-  summarize(ncomparisons = n(),
-            mean_r2 = mean(r2),
-            mean_r2_log = mean(r2_log),
-            mean_cd = mean(cd),
-            mean_prop_off = mean(prop_off),
-            mean_div = mean(div)) %>%
-  ungroup() %>%
-  mutate(lognparts = log(as.numeric(nparts)))
-
-write.csv(diffs_summary, here::here("analysis", "diff_summary.csv"), row.names = F)
+if(on_hpg) {
+  diffs <- read.csv(here::here("analysis", "diff_dfs.csv"), stringsAsFactors = F)
+  diffs_summary <- read.csv(here::here("analysis", "diff_summary.csv"), stringsAsFactors = F)
+  
+  diffs <- diffs %>%
+    filter(nparts >1, s0 > 2, !is.na(sim1), !is.na(sim2), !is.infinite(r2), !is.infinite(r2_log)) %>%
+    mutate(community_name = paste0(s0, "_", n0)) %>%
+    group_by_all() %>%
+    mutate(low_sim = min(sim1, sim2),
+           high_sim = max(sim1, sim2)) %>%
+    ungroup() %>%
+    group_by(low_sim, high_sim, community_name) %>%
+    mutate(dup = row_number()) %>%
+    ungroup() %>%
+    filter(dup == 1)
+  
+  
+  diffs_summary <- diffs %>%
+    mutate(sim_name = paste0(sim1, "_", sim2)) %>%
+    group_by(community_name, s0, n0, nparts) %>%
+    summarize(ncomparisons = n(),
+              mean_r2 = mean(r2),
+              mean_r2_log = mean(r2_log),
+              mean_cd = mean(cd),
+              mean_prop_off = mean(prop_off),
+              mean_div = mean(div)) %>%
+    ungroup() %>%
+    mutate(lognparts = log(as.numeric(nparts)))
+  
+  write.csv(diffs, here::here("analysis", "diffs_handled.csv"), row.names = F)
+  
+  write.csv(diffs_summary, here::here("analysis", "diff_summary.csv"), row.names = F)
+} else {
+  diffs <- read.csv(here::here("analysis", "diffs_handled.csv"), stringsAsFactors = F)
+  diffs_summary <- read.csv( here::here("analysis", "diff_summary.csv"), stringsAsFactors = F)
+}
 
 ```
 
