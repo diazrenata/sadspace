@@ -43,6 +43,9 @@ diffs_summary <- diffs %>%
             mean_div = mean(div)) %>%
   ungroup() %>%
   mutate(lognparts = log(as.numeric(nparts)))
+
+write.csv(diffs_summary, here::here("analysis", "diff_summary.csv"), row.names = F)
+
 ```
 
 Number of comparisons
