@@ -15,7 +15,7 @@ library(ggpmisc)
 ```
 
 ```{r load diffs}
-if(on_hpg) {
+if(params$on_hpg) {
   diffs <- read.csv(here::here("analysis", "diff_dfs.csv"), stringsAsFactors = F)
   diffs_summary <- read.csv(here::here("analysis", "diff_summary.csv"), stringsAsFactors = F)
   
