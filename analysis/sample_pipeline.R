@@ -4,7 +4,7 @@ library(sadspace)
 expose_imports("sadspace")
 
 sv <- define_statevars()
-sv_lows <- define_statevars(s_range = c(0, 2.5), n_range = c(0, 10.5), logs = TRUE, by = .2)
+sv_lows <- define_statevars(s_range = c(0, 2.5), n_range = c(0, 10.5), logs = TRUE, by = .4)
 
 sv2 <- sv %>%
   dplyr::select(s0) %>%
@@ -14,7 +14,8 @@ sv2 <- sv %>%
 
 sv <- dplyr::bind_rows(sv, sv2, sv_lows) %>%
   assign_ptable() %>%
-  dplyr::filter(p_table != "none")
+  dplyr::filter(p_table != "none") %>%
+  dplyr::distinct()
 
 #sv <- sv[1:5, ]
 
