@@ -95,7 +95,7 @@ All comparisons:
 ggplot(filter(diffs_summary), aes(log(s0), log(n0), color = mean_r2, shape = lognparts >= 10)) +
   geom_point() +
   theme_bw() +
-  scale_color_viridis_c(limits = c(0, 1))
+  scale_color_viridis_c(limits = c(-1, 1))
 
 
 ggplot(filter(diffs_summary), aes(log(s0), log(n0), color = mean_r2_log, shape = lognparts >= 10)) +
