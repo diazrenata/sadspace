@@ -1,0 +1,13 @@
+^sadspace\.Rproj$
+^\.Rproj\.user$
+^LICENSE\.md$
+^working-data$
+^working-data/*$
+^analysis$
+^analysis/*$
+^submit_*.sbatch$
+^slurm_batchtools.tmpl$
+logs/*$
+logs$
+^\.Rproj\.user$
+^LICENSE\.md$

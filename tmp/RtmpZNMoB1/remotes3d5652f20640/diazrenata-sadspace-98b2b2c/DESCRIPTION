@@ -1,0 +1,45 @@
+Package: sadspace
+Title: Exploring SAD space
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Renata",
+           family = "Diaz",
+           role = c("aut", "cre"),
+           email = "first.last@example.com")
+Description: What the package does (one paragraph)
+License: MIT + file LICENSE
+ByteCompile: true
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
+Imports: 
+    DBI,
+    drake (>= 7.0.0),
+    dplyr,
+    gmp,
+    e1071,
+    entropy,
+    feasiblesads,
+    here,
+    portalr,
+    purrr,
+    rmarkdown,
+    storr,
+    tidyr,
+    magrittr,
+    vegan
+Suggests: 
+    testthat
+Remotes: 
+    diazrenata/feasiblesads
+RemoteType: github
+RemoteHost: api.github.com
+RemoteRepo: sadspace
+RemoteUsername: diazrenata
+RemoteRef: master
+RemoteSha: 98b2b2c4e7b34395fb0e0f798905b2382387fc63
+GithubRepo: sadspace
+GithubUsername: diazrenata
+GithubRef: master
+GithubSHA1: 98b2b2c4e7b34395fb0e0f798905b2382387fc63
