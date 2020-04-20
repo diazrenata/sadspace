@@ -100,10 +100,14 @@ di_summary_df <- di_dfs %>%
   dplyr::summarize(mean_skew = mean(skew, na.rm = T),
                    sd_skew = sd(skew, na.rm = T),
                    range_skew = max(skew, na.rm = T) - min(skew, na.rm = T),
+                   lowerq_skew = quantile(skew, na.rm = T, probs = .025),
+                   upperq_skew = quantile(skew, na.rm = T, probs = .975),
                    median_skew = median(skew, na.rm = T),
                    median_simpson = median(simpson, na.rm = T),
                    mean_simpson = mean(simpson, na.rm = T),
                    sd_simpson = sd(simpson, na.rm = T),
+                   lowerq_simpson = quantile(simpson, na.rm = T, probs = .025),
+                   upperq_simpson = quantile(simpson, na.rm = T, probs = .975),
                    range_simpson = max(simpson, na.rm = T) - min(simpson, na.rm = T)) %>%
   dplyr::ungroup() %>%
   dplyr::mutate(log_nunique = log(nunique),
