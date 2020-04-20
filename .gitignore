@@ -12,5 +12,11 @@ analysis/masterp_mamm.Rds
 analysis/di_dfs.csv
 analysis/diff_dfs.csv
 analysis/di*
+<<<<<<< HEAD
 /orange/ewhite/diaz.renata/sadspace/analysis/di_summary_df.csv
 /orange/ewhite/diaz.renata/sadspace/analysis/fs_size_dat.csv
+=======
+analysis/di_summary_df.csv
+analysis/fs_size_dat.csv
+
+>>>>>>> 4205070e4563e95e247d6b01c27d8ef56b40d5e1
